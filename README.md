@@ -49,9 +49,21 @@ a corresponding [Digital Ocean Community Tutorial](http://bit.ly/1AGUZkq).
 
         docker run --volumes-from $OVPN_DATA --rm kylemanna/openvpn ovpn_getclient CLIENTNAME > CLIENTNAME.ovpn
 
+## Debugging Tips
+
 * Create an environment variable with the name DEBUG and value of 1 to enable debug output (using "docker -e").
 
-        docker run --volumes-from $OVPN_DATA -d -p 1194:1194/udp --privileged -e DEBUG=1 kylemanna/openvpn
+        docker run --volumes-from $OVPN_DATA -p 1194:1194/udp --privileged -e DEBUG=1 kylemanna/openvpn
+
+* Test using a client that has openvpn installed correctly 
+
+        $ openvpn --config CLIENTNAME.ovpn
+
+* Run through a barrage of debugging checks on the client if things don't just work
+
+        $ ping 8.8.8.8    # checks connectivity without touching name resolution
+        $ dig google.com  # won't use the search directives in resolv.conf
+        $ nslookup google.com # will use search
 
 ## How Does It Work?
 
@@ -79,6 +91,7 @@ Conveniently, `kylemanna/openvpn` comes with a script called `ovpn_getclient`,
 which dumps an inline OpenVPN client configuration file.  This single file can
 then be given to a client for access to the VPN.
 
+To enable Two Factor Authentication for clients (a.k.a. OTP) see [this document](/docs/otp.md).
 
 ## OpenVPN Details
 
@@ -171,3 +184,8 @@ of a guarantee in the future.
      * OpenVPN core 3.0 android armv7a thumb2 32-bit
   * OS X Mavericks with Tunnelblick 3.4beta26 (build 3828) using openvpn-2.3.4
   * ArchLinux OpenVPN pkg 2.3.4-1
+  * 
+
+## Having permissions issues with Selinux enabled?
+
+See [this](docs/selinux.md)
